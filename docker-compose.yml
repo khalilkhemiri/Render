@@ -1,36 +1,38 @@
-version: "3.7"
+version: '3'
 services:
-  api_service:
-    build: .
-    restart: always
-    ports:
-      - "8083:8083"
-    networks:
-      - springapimysql-net
+  mysql:
+    image: mysql:latest
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/Audit2?createDatabaseIfNotExist=true
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
-      - SPRING_JPA_SHOW_SQL=true
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
-    depends_on:
-      - mysqldb
+      - SPRING_DATASOURCE_PASSWORD=root
     volumes:
-      - .m2:/root/.m2
-
-  mysqldb:
-    image: mysql:8.0
-    restart: always
+      - mysql-data:/var/lib/mysql
     ports:
       - "3306:3306"
     networks:
-      - springapimysql-net
+      - backend-network
+
+  backend:
+    image: omarkhedimallah/backend-audit:latest
     environment:
-      MYSQL_DATABASE: Audit2
-      MYSQL_USER: root
-      MYSQL_PASSWORD:
-      MYSQL_ROOT_PASSWORD:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/pi?useUnicode=true&useJDBCCompliantTimezoneShift=true&createDatabaseIfNotExist=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - DB_HOST=mysql
+      - DB_NAME=pi
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    ports:
+      - "8083:8083"
+    expose:
+      - 8083
+    depends_on:
+      - mysql
+    networks:
+      - backend-network
 
 networks:
-  springapimysql-net:
+  backend-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
