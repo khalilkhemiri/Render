@@ -1,6 +1,8 @@
 HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
+
+# But do not ignore these files
+!target/spring_rest_docker.jar!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
