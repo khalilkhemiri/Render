@@ -1,0 +1,11 @@
+# Exported from Render on 2024-06-29T15:21:51Z
+services:
+- type: web
+  name: Render
+  runtime: docker
+  repo: https://github.com/khalilkhemiri/Render
+  plan: free
+  region: oregon
+  dockerContext: .
+  dockerfilePath: ./Dockerfile
+version: "1"
